@@ -1,0 +1,1 @@
+	This repository contains code to transition from model user to model builder. The focus is on understanding, implementing, and debugging the inner workings of machine learning systems. This repo will be useful to evaluate models critically, apply advanced learning techniques, and explore current trends in machine learning research and development.
