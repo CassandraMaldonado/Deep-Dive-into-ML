@@ -11656,7 +11656,40 @@ The best performing model is SVC (RBF Kernel) with a test accuracy of 0.8452
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>Linear kernel: 82.14% test accuracy</em>
+<em>Polynomial kernel: 77.38% test accuracy</em>
+<em>RBF kernel: 84.52% test accuracy</em></p>
+<p><em>The benefit of using the RBF kernel over a linear kernel is its ability to capture complex, non-linear relationships in the urban land cover data. The RBF kernel significantly outperformed the linear kernel by more than 2%, suggesting that the spectral and textural features of urban landscapes don't follow linear patterns.</em></p>
+<p><em>The polynomial kernel performed worse than both the linear and RBF kernels, despite its theoretical ability to capture non-linear patterns. This could be because the polynomial kernel may have created too complex a decision boundary for this dataset.</em></p>
+<p><em>The downside of using non-linear kernels is the higher risk of overfitting. The polynomial kernel showed a difference of 17.69% between training and testing accuracy, while the RBF kernel showed a 14.29% difference. The linear kernel had the smallest difference of 6.61%, indicating better generalization despite lower overall accuracy.</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>c) Explain the 'C' parameter used in steps 4-6. What does a small C mean versus a large C in sklearn? Why is it important to use the 'C' parameter when fitting a model?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>The 'C' parameter in SVMs controls the trade-off between achieving a low training error and a low testing error by controlling the model's complexity.</em></p>
+<p><em>Linear kernel selected a very small C of 0.01</em>
+<em>Polynomial kernel selected a higher C of 3.81</em>
+<em>RBF kernel selected a moderate C of 2.81</em></p>
+<p><em>A small C value prioritizes a simpler model with a wider margin between classes, allowing more misclassifications on training data but potentially better generalization. This explains why the linear SVM had the smallest gap between training and testing accuracy.</em></p>
+<p><em>A larger C value enforces stricter classification with fewer training errors but risks overfitting. This is evident in the polynomial kernel's large accuracy difference between training and testing.</em></p>
+<p><em>The C parameter is crucial when fitting SVMs because it directly controls the balance between model complexity and generalization.</em></p>
 </div>
 </div>
 </div>
@@ -11678,7 +11711,34 @@ The best performing model is SVC (RBF Kernel) with a test accuracy of 0.8452
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>Scaling is critical for SVMs because they calculate distances between data points. Features with larger numerical ranges would disproportionately influence these distance calculations without scaling.</em></p>
+<p><em>For our Urban Land Cover dataset, features like spectral bands which might range from 0-255, would completely dominate smaller-range features like normalized indices ranging from -1 to 1. This would cause the SVM to effectively ignore potentially important information in the smaller-scale features.</em></p>
+<p><em>The impact of not scaling would be especially severe in the dataset because it contains features with vastly different scales. Without scaling, the model would be biased toward features with larger numerical ranges rather than those with the most discriminative power for land cover classification.</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>e) Describe conceptually what the purpose of a kernel is for Support Vector Machines.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>Conceptually, kernels in SVMs are mathematical functions that transform the original data space into a higher-dimensional space where linear separation becomes possible. This allows SVMs to find non-linear decision boundaries without explicitly computing the transformation.</em></p>
+<p><em>The linear kernel could only create straight-line boundaries between land cover classes. The RBF kernel was able to create more flexible, non-linear boundaries that better separated complex urban land cover classes like trees, buildings, and asphalt.</em></p>
+<p><em>For the Urban Land Cover dataset, the RBF kernel helped the SVM identify intricate patterns that distinguish between similar-looking classes. The kernel  transformed our 147-dimensional feature space into an even higher-dimensional space where these urban land cover types became more linearly separable.</em></p>
+<p><em>The performance difference between kernels in our results highlights how important selecting the appropriate kernel is when applying SVMs to real-world classification problems with complex, non-linear relationships.</em></p>
 </div>
 </div>
 </div>
