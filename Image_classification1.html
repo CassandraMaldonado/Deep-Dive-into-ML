@@ -8960,9 +8960,37 @@ Best test accuracy: 0.8750
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>The 1×1 convolution seemed weird to me at first, like how can a single pixel be a filter, but it's actually super useful since it lets you mix and transform channels without changing the height and width. It reduces the number of parameters, like if you have too many channels, you can use 1×1 convolutions to shrink it down to something more manageable before applying a 3×3 filter. The 1x1 kernel adds non-linearity since there's usually a ReLU after the 1×1 convolution, it introduces more complex relationships between channels without changing the spatial dimensions. The 1x1 kernel is like having each pixel decide which channel features are most important at that exact location.</em></p>
+<p><em>I didn't use 1×1 convolutions in this assignment, but they're common in more advanced architectures like ResNet and Inception networks. They're especially useful when you need to balance computational efficiency with model expressiveness.</em></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <ol start="7">
 <li>What are the advantages of a CNN over a fully connected DNN for this image classification problem?</li>
 </ol>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><em>For this image classification task, CNNs are way better than fully connected networks for several reasons:</em></p>
+<p><em>1. Fewer parameters: If we did a fully connected network with our 64×64×3 images, the first layer alone would have 12,288 * Neurons parameters. My CNN has filters with shared weights, so it needs fewer parameters overall. This means faster training and less chance of overfitting with the limited dataset.</em></p>
+<p><em>2. Captures spatial patterns: CNNs are designed specifically for images, they can detect edges, then shapes, then more complex features as it goes deeper. A regular DNN treats each pixel as independent and loses all that spatial information.</em></p>
+<p><em>3. Position invariance: Thanks to pooling layers, my CNN can recognize objects regardless of exactly where they are in the image. This is super important since the same object might appear in slightly different positions across different images.</em></p>
+<p><em>4. Better with limited data: Since CNNs have inductive bias toward image data which means that they're designed specifically for images, so they need fewer examples to learn effectively. With our relatively small dataset, this is a huge advantage.</em></p>
+<p><em>I found the CNN architecture picked up on distinctive patterns in each image category that would have been much harder for a fully connected network to learn. The hierarchical feature extraction, from simple edges to complex patterns, was particularly effective for distinguishing between the four categories in the dataset.</em></p>
 </div>
 </div>
 </div>
