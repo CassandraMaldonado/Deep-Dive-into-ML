@@ -52,6 +52,99 @@ st.markdown("""
         border-radius: 4px;
         font-weight: 500;
     }
+    
+    /* New styles for model architecture */
+    .model-box {
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .model-component {
+        margin-bottom: 1rem;
+    }
+    .model-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #1E40AF;
+        margin-bottom: 0.5rem;
+    }
+    .model-list {
+        margin-left: 1.5rem;
+    }
+    .model-item {
+        margin-bottom: 0.3rem;
+    }
+    
+    /* New styles for confusion matrix */
+    .confusion-matrix {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
+    .matrix-header {
+        background-color: #E0E7FF;
+        font-weight: bold;
+        text-align: center;
+        padding: 0.8rem;
+    }
+    .matrix-label {
+        background-color: #E0E7FF;
+        font-weight: bold;
+        padding: 0.8rem;
+    }
+    .matrix-true-negative {
+        background-color: #DBEAFE;
+        text-align: center;
+        padding: 0.8rem;
+        font-weight: bold;
+    }
+    .matrix-false-positive {
+        background-color: #FEE2E2;
+        text-align: center;
+        padding: 0.8rem;
+        font-weight: bold;
+    }
+    .matrix-false-negative {
+        background-color: #FEE2E2;
+        text-align: center;
+        padding: 0.8rem;
+        font-weight: bold;
+    }
+    .matrix-true-positive {
+        background-color: #DBEAFE;
+        text-align: center;
+        padding: 0.8rem;
+        font-weight: bold;
+    }
+    .subtext {
+        font-size: 0.8rem;
+        color: #4B5563;
+        text-align: center;
+        display: block;
+        margin-top: 0.3rem;
+    }
+    
+    /* Feature importance styles */
+    .feature-bar {
+        height: 2rem;
+        background-color: #3B82F6;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    .feature-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.2rem;
+    }
+    .feature-name {
+        font-weight: 500;
+    }
+    .feature-value {
+        color: #4B5563;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -62,10 +155,11 @@ def load_data():
         # Try to load the actual data file
         df = pd.read_json('transactions.txt', lines=True)
         df['transactionDateTime'] = pd.to_datetime(df['transactionDateTime'])
+        st.sidebar.success("Using real data from transactions.txt")
         return df
     except:
         # If the file doesn't exist, create sample data
-        st.warning("Couldn't load data file. Using sample data for demonstration.")
+        st.sidebar.warning("Using sample data for demonstration. Place your transactions.txt file in the same directory for real data.")
         return create_sample_data()
 
 def create_sample_data(n_samples=1000):
@@ -125,11 +219,14 @@ def main():
     # Apply feature engineering
     df_features = engineer_features(df)
     
+    # Define the pages and ensure Demo is the second page
+    pages = ["Dashboard Overview", "Live Demo", "Fraud Patterns", "Model Performance"]
+    
     # Navigation sidebar
     st.sidebar.title("Navigation")
     page = st.sidebar.radio(
         "Select a page",
-        ["Dashboard Overview", "Live Demo", "Fraud Patterns", "Model Performance"]
+        pages
     )
     
     # Dashboard Overview page
@@ -174,6 +271,38 @@ def main():
                 <div class="metric-label">Avg. Fraud Amount</div>
             </div>
             """, unsafe_allow_html=True)
+        
+        # Fraud distribution
+        st.markdown('<h2 class="sub-header">Fraud Distribution</h2>', unsafe_allow_html=True)
+        
+        # Create simple fraud distribution visualization
+        fraud_count = df['isFraud'].sum()
+        total_count = len(df)
+        fraud_percentage = fraud_count / total_count * 100
+        
+        st.markdown(f"""
+        <div style="background-color: #F8FAFC; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <div style="width: 15px; height: 15px; background-color: #3B82F6; border-radius: 3px; margin-right: 0.5rem;"></div>
+                    <div>Legitimate Transactions: {total_count - fraud_count:,} ({100 - fraud_percentage:.2f}%)</div>
+                </div>
+                <div style="width: 100%; background-color: #DBEAFE; height: 30px; border-radius: 4px;">
+                    <div style="width: {100 - fraud_percentage}%; background-color: #3B82F6; height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+            
+            <div>
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <div style="width: 15px; height: 15px; background-color: #EF4444; border-radius: 3px; margin-right: 0.5rem;"></div>
+                    <div>Fraudulent Transactions: {fraud_count:,} ({fraud_percentage:.2f}%)</div>
+                </div>
+                <div style="width: 100%; background-color: #FEE2E2; height: 30px; border-radius: 4px;">
+                    <div style="width: {fraud_percentage}%; background-color: #EF4444; height: 100%; border-radius: 4px;"></div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Key insights
         st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
@@ -401,24 +530,33 @@ def main():
         st.markdown('<h2 class="sub-header">Model Architecture</h2>', unsafe_allow_html=True)
         
         # Create a properly formatted model architecture display
-        model_architecture = """
-        Our fraud detection model uses XGBoost, a powerful gradient boosting algorithm
-        that excels at classification tasks with imbalanced data. The model was trained
-        on historical transaction data with these key components:
-
-        Input Features:
-        - Transaction characteristics (amount, time, location)
-        - Account information (age, credit utilization)
-        - Merchant information (category codes, transaction frequency)
-        - Security features (CVV match, card presence)
-
-        Preprocessing Pipeline:
-        - Standardization of numeric features
-        - One-hot encoding of categorical variables
-        - Class weight balancing to address fraud imbalance
-        """
-        
-        st.code(model_architecture)
+        st.markdown("""
+        <div class="model-box">
+            <div class="model-component">
+                <div class="model-title">Our fraud detection model uses XGBoost</div>
+                <p>A powerful gradient boosting algorithm that excels at classification tasks with imbalanced data. The model was trained on historical transaction data with these key components:</p>
+            </div>
+            
+            <div class="model-component">
+                <div class="model-title">Input Features:</div>
+                <ul class="model-list">
+                    <li class="model-item">Transaction characteristics (amount, time, location)</li>
+                    <li class="model-item">Account information (age, credit utilization)</li>
+                    <li class="model-item">Merchant information (category codes, transaction frequency)</li>
+                    <li class="model-item">Security features (CVV match, card presence)</li>
+                </ul>
+            </div>
+            
+            <div class="model-component">
+                <div class="model-title">Preprocessing Pipeline:</div>
+                <ul class="model-list">
+                    <li class="model-item">Standardization of numeric features</li>
+                    <li class="model-item">One-hot encoding of categorical variables</li>
+                    <li class="model-item">Class weight balancing to address fraud imbalance</li>
+                </ul>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Model performance metrics
         st.markdown('<h2 class="sub-header">Performance Metrics</h2>', unsafe_allow_html=True)
@@ -469,24 +607,38 @@ def main():
         # Confusion matrix
         st.markdown('<h2 class="sub-header">Confusion Matrix</h2>', unsafe_allow_html=True)
         
-        # Create simple text-based confusion matrix
-        confusion_matrix = """
-        Predicted vs. Actual Classes
-        
-                        Predicted Legitimate    Predicted Fraud
-        Actual Legitimate      9,820                 30
-                                (TN)                 (FP)
-                            
-        Actual Fraud            25                   125
-                                (FN)                 (TP)
-        """
-        
-        st.code(confusion_matrix)
+        # Create HTML confusion matrix
+        st.markdown("""
+        <table class="confusion-matrix">
+            <tr>
+                <td></td>
+                <td></td>
+                <td colspan="2" class="matrix-header">Predicted</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="matrix-header">Legitimate</td>
+                <td class="matrix-header">Fraud</td>
+            </tr>
+            <tr>
+                <td rowspan="2" style="writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-weight: bold; background-color: #E0E7FF; padding: 0.8rem;">Actual</td>
+                <td class="matrix-label">Legitimate</td>
+                <td class="matrix-true-negative">9,820<span class="subtext">True Negative</span></td>
+                <td class="matrix-false-positive">30<span class="subtext">False Positive</span></td>
+            </tr>
+            <tr>
+                <td class="matrix-label">Fraud</td>
+                <td class="matrix-false-negative">25<span class="subtext">False Negative</span></td>
+                <td class="matrix-true-positive">125<span class="subtext">True Positive</span></td>
+            </tr>
+        </table>
+        """, unsafe_allow_html=True)
         
         # Feature importance
         st.markdown('<h2 class="sub-header">Top Predictive Features</h2>', unsafe_allow_html=True)
         
-        # Create simple visualization of feature importance
+        # Create visual feature importance
         features = [
             ("CVV Match", 100),
             ("Transaction Amount", 82),
@@ -500,12 +652,14 @@ def main():
             ("Amount/Limit Ratio", 32)
         ]
         
-        feature_chart = "Feature Importance:\n\n"
         for feature, importance in features:
-            bar = "■" * int(importance / 5)
-            feature_chart += f"{feature:25} | {bar} {importance}\n"
-        
-        st.code(feature_chart)
+            st.markdown(f"""
+            <div class="feature-label">
+                <span class="feature-name">{feature}</span>
+                <span class="feature-value">{importance}</span>
+            </div>
+            <div class="feature-bar" style="width: {importance}%;"></div>
+            """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
