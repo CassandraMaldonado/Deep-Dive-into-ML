@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import json
-import os
 
 # Set page configuration
 st.set_page_config(
@@ -54,88 +52,21 @@ st.markdown("""
         border-radius: 4px;
         font-weight: 500;
     }
-    .confusion-matrix {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 2rem 0;
-    }
-    .matrix-row {
-        display: flex;
-        width: 100%;
-        max-width: 600px;
-    }
-    .matrix-cell {
-        flex: 1;
-        padding: 1rem;
-        text-align: center;
-        font-weight: bold;
-        border: 1px solid #E5E7EB;
-    }
-    .matrix-header {
-        background-color: #EFF6FF;
-    }
-    .matrix-true-negative {
-        background-color: #DBEAFE;
-    }
-    .matrix-false-positive {
-        background-color: #FEE2E2;
-    }
-    .matrix-false-negative {
-        background-color: #FEE2E2;
-    }
-    .matrix-true-positive {
-        background-color: #DBEAFE;
-    }
-    .model-architecture {
-        background-color: #F3F4F6;
-        padding: 1.5rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-    }
-    .feature-row {
-        display: flex;
-        margin-bottom: 0.5rem;
-    }
-    .feature-name {
-        flex: 1;
-    }
-    .feature-bar-container {
-        flex: 3;
-        background-color: #E5E7EB;
-        height: 1.5rem;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .feature-bar {
-        height: 100%;
-        background-color: #3B82F6;
-    }
-    .feature-value {
-        margin-left: 1rem;
-        font-weight: bold;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # Helper functions
-@st.cache_data
 def load_data():
     """Load transaction data from the transactions.txt file"""
     try:
         # Try to load the actual data file
         df = pd.read_json('transactions.txt', lines=True)
         df['transactionDateTime'] = pd.to_datetime(df['transactionDateTime'])
-        if 'accountOpenDate' in df.columns:
-            df['accountOpenDate'] = pd.to_datetime(df['accountOpenDate'])
-        if 'dateOfLastAddressChange' in df.columns:
-            df['dateOfLastAddressChange'] = pd.to_datetime(df['dateOfLastAddressChange'])
-        
-        return df, True  # Return the dataframe and a flag indicating real data
+        return df
     except:
         # If the file doesn't exist, create sample data
-        st.warning("Sample data is being used for demonstration purposes. Connect to your actual data source for production use.")
-        return create_sample_data(), False  # Return sample data and flag
+        st.warning("Couldn't load data file. Using sample data for demonstration.")
+        return create_sample_data()
 
 def create_sample_data(n_samples=1000):
     """Create sample data for demonstration"""
@@ -153,67 +84,19 @@ def create_sample_data(n_samples=1000):
     # Generate account numbers
     account_numbers = np.random.randint(100000000, 999999999, size=n_samples)
     
-    # Generate credit limit and available money
-    credit_limits = np.random.choice([1000, 2000, 5000, 10000, 15000, 20000, 50000], size=n_samples)
-    available_money = np.random.uniform(0, 1, size=n_samples) * credit_limits
-    
-    # Generate merchant names
-    merchants = ['Walmart', 'Amazon', 'Target', 'Starbucks', 'McDonald\'s', 'Apple', 'Netflix', 'Uber']
-    merchant_names = np.random.choice(merchants, size=n_samples)
-    
-    # Generate merchant category codes
-    categories = ['retail', 'entertainment', 'travel', 'restaurant', 'grocery', 'utility', 'subscription', 'transportation']
-    merchant_category_codes = np.random.choice(categories, size=n_samples)
-    
-    # Generate card presence and CVV match
-    card_present = np.random.choice([True, False], size=n_samples, p=[0.6, 0.4])
-    cvv_match = np.random.choice([True, False], size=n_samples, p=[0.95, 0.05])
-    
-    # Generate country codes
-    countries = ['US', 'CA', 'MX', 'UK', 'FR', 'DE', 'JP', 'AU']
-    merchant_country = np.random.choice(countries, size=n_samples)
-    acq_country = np.random.choice(['US'] * 9 + countries, size=n_samples)  # Mostly US
-    
     # Generate fraud labels (2% fraud rate)
-    # More likely to be fraud if:
-    # - Card not present
-    # - CVV doesn't match
-    # - Cross-border transaction
-    # - High amount
-    fraud_prob = np.zeros(n_samples)
-    fraud_prob += ~card_present * 0.02
-    fraud_prob += ~cvv_match * 0.15
-    fraud_prob += (merchant_country != acq_country) * 0.03
-    fraud_prob += (amounts > 500) * 0.05
-    fraud_prob = np.minimum(fraud_prob, 0.8)  # Cap at 80% probability
-    
-    is_fraud = np.random.binomial(1, fraud_prob).astype(bool)
+    is_fraud = np.random.binomial(1, 0.02, size=n_samples).astype(bool)
     
     # Create DataFrame
     df = pd.DataFrame({
         'accountNumber': account_numbers,
         'transactionDateTime': transaction_dates,
         'transactionAmount': amounts,
-        'merchantName': merchant_names,
-        'merchantCategoryCode': merchant_category_codes,
-        'creditLimit': credit_limits,
-        'availableMoney': available_money,
-        'cardPresent': card_present,
-        'cardCVV': np.random.randint(100, 999, size=n_samples),
-        'enteredCVV': np.where(cvv_match, 
-                              np.random.randint(100, 999, size=n_samples),
-                              np.random.randint(100, 999, size=n_samples)),
-        'merchantCountryCode': merchant_country,
-        'acqCountry': acq_country,
         'isFraud': is_fraud
     })
     
-    # Add engineered features
-    df['hour'] = pd.to_datetime(df['transactionDateTime']).dt.hour
-    df['day_of_week'] = pd.to_datetime(df['transactionDateTime']).dt.dayofweek
-    df['is_weekend'] = df['day_of_week'].isin([5, 6]).astype(int)
-    df['cvv_match'] = cvv_match.astype(int)
-    df['is_cross_border'] = (df['merchantCountryCode'] != df['acqCountry']).astype(int)
+    # Add hour feature
+    df['hour'] = df['transactionDateTime'].dt.hour
     
     return df
 
@@ -231,124 +114,13 @@ def engineer_features(df):
     
     # Transaction amount features
     features['amount_abs'] = features['transactionAmount'].abs()
-    features['amount_is_round'] = (features['amount_abs'] % 1 == 0).astype(int)
-    
-    # Credit utilization
-    if 'creditLimit' in features.columns and 'availableMoney' in features.columns:
-        features['credit_utilization'] = 1 - (features['availableMoney'] / features['creditLimit'])
-    
-    # Card verification features (if available)
-    if 'cardCVV' in features.columns and 'enteredCVV' in features.columns and 'cvv_match' not in features.columns:
-        features['cvv_match'] = (features['cardCVV'] == features['enteredCVV']).astype(int)
-    
-    # Cross-border transaction
-    if 'merchantCountryCode' in features.columns and 'acqCountry' in features.columns and 'is_cross_border' not in features.columns:
-        features['is_cross_border'] = (features['merchantCountryCode'] != features['acqCountry']).astype(int)
     
     return features
-
-def create_fraud_distribution_chart(df):
-    """Create a text-based chart for fraud distribution"""
-    fraud_count = df['isFraud'].sum()
-    total_count = len(df)
-    fraud_percentage = fraud_count / total_count * 100
-    
-    chart = f"""
-    Fraud Distribution:
-    
-    Legitimate Transactions: {'■' * int(95)} {total_count - fraud_count} ({100 - fraud_percentage:.2f}%)
-    Fraudulent Transactions: {'■' * int(fraud_percentage / 20)} {fraud_count} ({fraud_percentage:.2f}%)
-    """
-    
-    return chart
-
-def create_hourly_fraud_chart(df):
-    """Create a text-based chart for hourly fraud rates"""
-    hour_groups = df.groupby('hour')
-    fraud_rates = hour_groups['isFraud'].mean() * 100
-    
-    chart = "Fraud Rate by Hour of Day:\n\n"
-    
-    for hour in range(24):
-        rate = fraud_rates.get(hour, 0)
-        bar = '■' * int(rate)
-        chart += f"{hour:02d}:00 | {bar} {rate:.2f}%\n"
-    
-    return chart
-
-def create_amount_fraud_chart(df):
-    """Create a text-based chart for fraud by amount range"""
-    # Create bins for transaction amounts
-    bins = [0, 10, 50, 100, 500, float('inf')]
-    labels = ['$0-$10', '$10-$50', '$50-$100', '$100-$500', '$500+']
-    
-    df['amount_range'] = pd.cut(df['transactionAmount'].abs(), bins=bins, labels=labels)
-    
-    # Calculate fraud rate by amount range
-    amount_fraud_rates = df.groupby('amount_range')['isFraud'].mean() * 100
-    
-    chart = "Fraud Rate by Transaction Amount:\n\n"
-    
-    for amount_range in labels:
-        rate = amount_fraud_rates.get(amount_range, 0)
-        bar = '■' * int(rate / 2)  # Scaled to fit
-        chart += f"{amount_range:10} | {bar} {rate:.2f}%\n"
-    
-    return chart
-
-def get_model_performance_metrics(df):
-    """Calculate or simulate model performance metrics"""
-    # For a real application, these would come from your trained model
-    # Here we're simulating reasonable metrics for fraud detection
-    return {
-        'accuracy': 0.992,
-        'precision': 0.87,
-        'recall': 0.83,
-        'f1': 0.85,
-        'auc': 0.96
-    }
-
-def get_confusion_matrix_values(df):
-    """Calculate or simulate confusion matrix values"""
-    # For a real application, these would come from your model evaluation
-    # Here we're creating reasonable values for demonstration
-    fraud_count = int(df['isFraud'].sum())
-    total_count = len(df)
-    
-    # Calculate values that seem reasonable
-    true_negatives = total_count - fraud_count - 30  # Most non-fraud correctly identified
-    false_positives = 30  # Some legitimate transactions flagged as fraud
-    true_positives = int(fraud_count * 0.83)  # Recall of 83%
-    false_negatives = fraud_count - true_positives
-    
-    return {
-        'tn': true_negatives,
-        'fp': false_positives,
-        'fn': false_negatives,
-        'tp': true_positives
-    }
-
-def get_feature_importance():
-    """Get or simulate feature importance values"""
-    # For a real application, these would come from your trained model
-    # Here we're creating reasonable values for fraud detection
-    return [
-        ("CVV Match", 100),
-        ("Transaction Amount", 82),
-        ("Hour of Day", 65),
-        ("Card Present", 61),
-        ("Credit Utilization", 55),
-        ("Merchant Category Risk", 48),
-        ("Account Age", 45),
-        ("Cross-Border Flag", 42),
-        ("Transaction Frequency", 38),
-        ("Amount/Limit Ratio", 32)
-    ]
 
 # Main application
 def main():
     # Load data
-    df, is_real_data = load_data()
+    df = load_data()
     
     # Apply feature engineering
     df_features = engineer_features(df)
@@ -402,10 +174,6 @@ def main():
                 <div class="metric-label">Avg. Fraud Amount</div>
             </div>
             """, unsafe_allow_html=True)
-        
-        # Fraud distribution chart
-        st.markdown('<h2 class="sub-header">Fraud Distribution</h2>', unsafe_allow_html=True)
-        st.code(create_fraud_distribution_chart(df))
         
         # Key insights
         st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
@@ -500,190 +268,3 @@ def main():
         
         # Cross-border factor
         if cross_border == "Yes":
-            base_score += 0.10
-            risk_factors.append("Cross-border transaction")
-        
-        # Merchant category factor
-        high_risk_categories = ["E-commerce", "Travel", "Entertainment"]
-        if merchant_category in high_risk_categories:
-            base_score += 0.07
-            risk_factors.append(f"High-risk merchant category ({merchant_category})")
-        
-        # Weekend factor
-        if weekend == "Yes":
-            base_score += 0.03
-        
-        # Cap risk score at 0.99
-        risk_score = min(base_score, 0.99)
-        
-        # Prediction threshold
-        threshold = 0.50
-        prediction = "FRAUD" if risk_score >= threshold else "LEGITIMATE"
-        prediction_color = "#EF4444" if prediction == "FRAUD" else "#3B82F6"
-        
-        # Display risk score and prediction
-        st.markdown('<h2 class="sub-header">Fraud Risk Assessment</h2>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-value" style="color: {prediction_color};">{risk_score:.2%}</div>
-                <div class="metric-label">Fraud Risk Score</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-value" style="color: {prediction_color};">{prediction}</div>
-                <div class="metric-label">Prediction</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        # Display risk factors
-        if risk_factors:
-            st.markdown('<h3 class="sub-header" style="font-size: 1.3rem;">Risk Factors Identified</h3>', unsafe_allow_html=True)
-            
-            for factor in risk_factors:
-                st.markdown(f"- {factor}")
-        
-        # Recommendations
-        st.markdown('<h3 class="sub-header" style="font-size: 1.3rem;">Recommended Actions</h3>', unsafe_allow_html=True)
-        
-        if prediction == "FRAUD":
-            st.markdown("""
-            <div class="insight-text" style="color: #EF4444;">
-                <p>⚠️ <strong>High fraud risk detected. Recommended actions:</strong></p>
-                <ul>
-                    <li>Decline transaction or put on hold pending verification</li>
-                    <li>Conduct customer callback to verify transaction</li>
-                    <li>Request additional verification if customer confirms legitimacy</li>
-                    <li>Monitor account for additional suspicious activity</li>
-                </ul>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            if risk_score > 0.3:  # Medium risk
-                st.markdown("""
-                <div class="insight-text" style="color: #F59E0B;">
-                    <p>⚠️ <strong>Medium fraud risk detected. Recommended actions:</strong></p>
-                    <ul>
-                        <li>Proceed with caution</li>
-                        <li>Consider additional verification for high-value transactions</li>
-                        <li>Monitor account for pattern of similar activity</li>
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
-            else:  # Low risk
-                st.markdown("""
-                <div class="insight-text" style="color: #10B981;">
-                    <p>✅ <strong>Low fraud risk detected. Recommended actions:</strong></p>
-                    <ul>
-                        <li>Approve transaction</li>
-                        <li>No additional verification needed</li>
-                        <li>Continue routine monitoring</li>
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
-    
-    # Fraud Patterns page
-    elif page == "Fraud Patterns":
-        # Header
-        st.markdown('<h1 class="main-header">Fraud Pattern Analysis</h1>', unsafe_allow_html=True)
-        
-        # Time-based patterns
-        st.markdown('<h2 class="sub-header">Time-based Fraud Patterns</h2>', unsafe_allow_html=True)
-        st.code(create_hourly_fraud_chart(df_features))
-        
-        # Key observations about time patterns
-        st.markdown("""
-        <div class="insight-text">
-            <p>📊 <strong>Key Observations:</strong></p>
-            <p>• Fraud rates peak during early morning hours (12am-4am), with the highest rate at <span class="highlight">2am</span>.</p>
-            <p>• Despite lower transaction volumes at night, fraud risk is substantially higher.</p>
-            <p>• Daytime hours (9am-5pm) show the lowest fraud rates, coinciding with normal business hours.</p>
-            <p>• Implementing enhanced monitoring during high-risk overnight hours could significantly reduce fraud losses.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Amount-based patterns
-        st.markdown('<h2 class="sub-header">Transaction Amount Patterns</h2>', unsafe_allow_html=True)
-        st.code(create_amount_fraud_chart(df_features))
-        
-        # Key observations about amount patterns
-        st.markdown("""
-        <div class="insight-text">
-            <p>📊 <strong>Key Observations:</strong></p>
-            <p>• Fraud rates increase significantly with transaction amounts, peaking in the <span class="highlight">$500+</span> range.</p>
-            <p>• Very small transactions (<$10) also show elevated fraud rates, possibly indicating "testing" behavior before larger fraudulent charges.</p>
-            <p>• Most legitimate transactions fall in the <span class="highlight">$10-$100</span> range.</p>
-            <p>• Implementing additional verification for high-value transactions could be an effective fraud prevention strategy.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Other significant patterns
-        st.markdown('<h2 class="sub-header">Other Significant Fraud Indicators</h2>', unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="insight-text">
-            <p>🔍 <strong>Top Fraud Indicators:</strong></p>
-            <ol>
-                <li><span class="highlight">CVV Mismatch</span>: When the entered CVV does not match the card's CVV, fraud rate increases by 19x</li>
-                <li><span class="highlight">Transaction Time</span>: Overnight transactions (12am-4am) have 3.5x higher fraud rate</li>
-                <li><span class="highlight">Transaction Amount</span>: Amounts over $500 have 4.2x higher fraud rate</li>
-                <li><span class="highlight">Card Presence</span>: Card-not-present transactions have 5x higher fraud rate</li>
-                <li><span class="highlight">Cross-Border</span>: International transactions have 3.7x higher fraud rate</li>
-            </ol>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Model Performance page
-    elif page == "Model Performance":
-        # Header
-        st.markdown('<h1 class="main-header">Fraud Detection Model Performance</h1>', unsafe_allow_html=True)
-        
-        # Model overview
-        st.markdown('<h2 class="sub-header">Model Architecture</h2>', unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div class="model-architecture">
-            <p>Our fraud detection model uses <span class="highlight">XGBoost</span>, a powerful gradient boosting algorithm that excels at classification tasks with imbalanced data. The model was trained on historical transaction data with these key components:</p>
-            
-            <p><strong>Input Features:</strong></p>
-            <ul>
-                <li>Transaction characteristics (amount, time, location)</li>
-                <li>Account information (age, credit utilization)</li>
-                <li>Merchant information (category codes, transaction frequency)</li>
-                <li>Security features (CVV match, card presence)</li>
-            </ul>
-            
-            <p><strong>Preprocessing Pipeline:</strong></p>
-            <ul>
-                <li>Standardization of numeric features</li>
-                <li>One-hot encoding of categorical variables</li>
-                <li>Class weight balancing to address fraud imbalance</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Model performance metrics
-        st.markdown('<h2 class="sub-header">Performance Metrics</h2>', unsafe_allow_html=True)
-        
-        metrics = get_model_performance_metrics(df)
-        
-        col1, col2, col3, col4 = st.columns(4)
-        
-        with col1:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-value">{metrics['accuracy']:.2%}</div>
-                <div class="metric-label">Accuracy</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-value">{metrics
