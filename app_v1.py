@@ -150,7 +150,7 @@ st.markdown("""
 
 # Helper functions
 def load_data():
-    """Load transaction data from the transactions.txt file"""
+    """Load transaction data from the reduced_transactions.txt file"""
     try:
         # Try to load the actual data file
         df = pd.read_json('transactions.txt', lines=True)
