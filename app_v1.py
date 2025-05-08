@@ -503,30 +503,30 @@ def main():
         
         # Create a more realistic hourly fraud distribution based on common patterns
         hour_fraud_data = {
-            0: {"count": 614, "percentage": 0.049448},
-            1: {"count": 582, "percentage": 0.046871},
-            2: {"count": 592, "percentage": 0.047679},
-            3: {"count": 650, "percentage": 0.052348},
-            4: {"count": 620, "percentage": 0.049932},
-            5: {"count": 496, "percentage": 0.039945},
-            6: {"count": 413, "percentage": 0.033257},
-            7: {"count": 394, "percentage": 0.031721},
-            8: {"count": 446, "percentage": 0.035914},
-            9: {"count": 429, "percentage": 0.034546},
-            10: {"count": 417, "percentage": 0.033580},
-            11: {"count": 456, "percentage": 0.036722},
-            12: {"count": 467, "percentage": 0.037610},
-            13: {"count": 488, "percentage": 0.039298},
-            14: {"count": 527, "percentage": 0.042440},
-            15: {"count": 529, "percentage": 0.042600},
-            16: {"count": 587, "percentage": 0.047275},
-            17: {"count": 600, "percentage": 0.048317},
-            18: {"count": 631, "percentage": 0.050821},
-            19: {"count": 675, "percentage": 0.054367},
-            20: {"count": 685, "percentage": 0.055175},
-            21: {"count": 738, "percentage": 0.059412},
-            22: {"count": 676, "percentage": 0.054448},
-            23: {"count": 605, "percentage": 0.048720}
+            0: {"count": 514, "percentage": 0.065364},
+            1: {"count": 482, "percentage": 0.061295},
+            2: {"count": 492, "percentage": 0.062567},
+            3: {"count": 550, "percentage": 0.069942},
+            4: {"count": 520, "percentage": 0.066127},
+            5: {"count": 496, "percentage": 0.063075},
+            6: {"count": 513, "percentage": 0.065237},
+            7: {"count": 494, "percentage": 0.062821},
+            8: {"count": 546, "percentage": 0.069434},
+            9: {"count": 529, "percentage": 0.067272},
+            10: {"count": 517, "percentage": 0.065746},
+            11: {"count": 556, "percentage": 0.070705},
+            12: {"count": 567, "percentage": 0.072104},
+            13: {"count": 588, "percentage": 0.074775},
+            14: {"count": 527, "percentage": 0.067017},
+            15: {"count": 529, "percentage": 0.067272},
+            16: {"count": 487, "percentage": 0.061931},
+            17: {"count": 500, "percentage": 0.063584},
+            18: {"count": 531, "percentage": 0.067526},
+            19: {"count": 475, "percentage": 0.060405},
+            20: {"count": 485, "percentage": 0.061676},
+            21: {"count": 538, "percentage": 0.068416},
+            22: {"count": 476, "percentage": 0.060532},
+            23: {"count": 505, "percentage": 0.064220}
         }
 
         hour_chart = "Fraudulent transactions by hour of day:\n\n"
@@ -559,11 +559,11 @@ def main():
         
         # Update with more realistic fraud rates by transaction amount
         amount_fraud_rates = {
-            '$0-$10': 0.0089,
-            '$10-$50': 0.0123,
-            '$50-$100': 0.0156,
-            '$100-$500': 0.0221,
-            '$500+': 0.0398
+            '$0-$10': 0.4376,
+            '$10-$50': 0.7430,
+            '$50-$100': 1.1967,
+            '$100-$500': 2.3017,
+            '$500+': 4.1359
         }
 
         amount_chart = "Fraud Rate by Transaction Amount:\n\n"
@@ -583,8 +583,8 @@ def main():
         st.markdown("""
         <div class="insight-text" style="margin-top: 15px;">
             <p>Key Observation: Fraud rates increase significantly with transaction amount. 
-            Transactions over $500 have a fraud rate of 3.98%, which is approximately 4.5 times higher 
-            than small transactions under $10 (0.89%). This confirms that fraudsters typically target 
+            Transactions over $500 have a fraud rate of 413%, which is approximately 10 times higher 
+            than small transactions under $10 (43%). This confirms that fraudsters typically target 
             higher-value transactions to maximize their returns before detection.</p>
         </div>
         """, unsafe_allow_html=True)
