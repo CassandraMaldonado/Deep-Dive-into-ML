@@ -152,14 +152,14 @@ st.markdown("""
 def load_data():
     """Load transaction data from the reduced_transactions.txt file"""
     try:
-        # Try to load the actual data file
-        df = pd.read_json('transactions.txt', lines=True)
+        # Try to load the actual data file - UPDATED to use reduced_transactions.txt
+        df = pd.read_json('reduced_transactions.txt', lines=True)
         df['transactionDateTime'] = pd.to_datetime(df['transactionDateTime'])
-        st.sidebar.success("Using real data from transactions.txt")
+        st.sidebar.success("Using real data from reduced_transactions.txt")
         return df
     except:
         # If the file doesn't exist, create sample data
-        st.sidebar.warning("Using sample data for demonstration. Place your transactions.txt file in the same directory for real data.")
+        st.sidebar.warning("Using sample data for demonstration. Place your reduced_transactions.txt file in the same directory for real data.")
         return create_sample_data()
 
 def create_sample_data(n_samples=1000):
@@ -294,34 +294,6 @@ def main():
           </div>
         </div>
         """, unsafe_allow_html=True)
-        
-        # Key insights
-        st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        avg_legit_amount = df[~df['isFraud']]['transactionAmount'].mean()
-        
-        with col1:
-            st.markdown(f"""
-            <div class="insight-text">
-                <p>• Fraudulent transactions make up <span class="highlight">{fraud_rate:.2f}%</span> of all transactions, representing a significant financial risk.</p>
-                <p>• The average fraudulent transaction amount is <span class="highlight">${avg_fraud_amount:.2f}</span>, which is {avg_fraud_amount/avg_legit_amount:.1f}x higher than legitimate transactions.</p>
-                <p>• Most fraud occurs during <span class="highlight">late night hours</span> (12am-4am), when monitoring may be reduced.</p>
-                <p>• Transactions without CVV match are <span class="highlight">19x</span> more likely to be fraudulent.</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div class="insight-text">
-                <p>• Cross-border transactions show a <span class="highlight">3.7x</span> higher fraud rate than domestic ones.</p>
-                <p>• Our model detects <span class="highlight">83.0%</span> of fraudulent transactions while maintaining a low false positive rate.</p>
-                <p>• The most predictive features are <span class="highlight">CVV match</span>, <span class="highlight">transaction amount</span>, and <span class="highlight">time of day</span>.</p>
-                <p>• We've identified <span class="highlight">5</span> high-risk merchant categories with abnormally high fraud rates.</p>
-            </div>
-            """, unsafe_allow_html=True)
-
         
         # Key insights
         st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
