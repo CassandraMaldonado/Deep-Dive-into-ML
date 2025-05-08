@@ -730,16 +730,16 @@ def main():
         
         # Create visual feature importance with updated features
         features = [
-            ("POS Entry Mode (05)", 0.1829),
-            ("Transaction Amount", 0.1120),
-            ("MCC Fraud Rate", 0.1116),
-            ("Card Present", 0.0465),
-            ("Merchant Category (Entertainment)", 0.0420),
-            ("Account Average amount", 0.0347),
-            ("Account txn count", 0.0340),
-            ("Merchant Category (Fastfood)", 0.0333),
-            ("POS Entry Mode (09)", 0.0329),
-            ("Merchant txn count", 0.0293)
+            ("POS Entry Mode (05)", 18.29),
+            ("Transaction Amount", 11.20),
+            ("MCC Fraud Rate", 11.16),
+            ("Card Present", 4.65),
+            ("Merchant Category (Entertainment)", 4.20),
+            ("Account Average amount", 3.47),
+            ("Account txn count", 3.40),
+            ("Merchant Category (Fastfood)", 3.33),
+            ("POS Entry Mode (09)", 3.29),
+            ("Merchant txn count", 2.93)
         ]
         
         for feature, importance in features:
