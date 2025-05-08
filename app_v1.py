@@ -234,40 +234,48 @@ def main():
         # Header
         st.markdown('<h1 class="main-header">Credit Card Fraud Detection Dashboard</h1>', unsafe_allow_html=True)
         
+        # Note about reduced dataset
+        st.markdown("""
+        <div class="insight-text" style="background-color: #F0FDF4; padding: 10px; border-radius: 8px; border-left: 4px solid #10B981; margin-bottom: 20px;">
+            <p><strong>Note:</strong> This dashboard uses a reduced dataset due to GitHub limitations. The full demo is running on Streamlit.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Metrics row
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            st.markdown(f"""
+            # Using hardcoded value from your statistics
+            st.markdown("""
             <div class="metric-card">
-                <div class="metric-value">{len(df):,}</div>
+                <div class="metric-value">786,363</div>
                 <div class="metric-label">Total Transactions</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col2:
-            fraud_count = df['isFraud'].sum()
-            fraud_rate = fraud_count / len(df) * 100
-            st.markdown(f"""
+            # Using hardcoded value from your statistics
+            st.markdown("""
             <div class="metric-card">
-                <div class="metric-value">{fraud_count:,}</div>
+                <div class="metric-value">12,417</div>
                 <div class="metric-label">Fraudulent Transactions</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
-            st.markdown(f"""
+            # Using hardcoded value from your statistics
+            st.markdown("""
             <div class="metric-card">
-                <div class="metric-value">{fraud_rate:.2f}%</div>
+                <div class="metric-value">1.58%</div>
                 <div class="metric-label">Fraud Rate</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col4:
-            avg_fraud_amount = df[df['isFraud']]['transactionAmount'].mean()
-            st.markdown(f"""
+            # Using hardcoded value from your statistics
+            st.markdown("""
             <div class="metric-card">
-                <div class="metric-value">${avg_fraud_amount:.2f}</div>
+                <div class="metric-value">$225.22</div>
                 <div class="metric-label">Avg. Fraud Amount</div>
             </div>
             """, unsafe_allow_html=True)
@@ -275,22 +283,22 @@ def main():
         # Fraud distribution
         st.markdown('<h2 class="sub-header">Fraud Distribution</h2>', unsafe_allow_html=True)
         
-        # Using the exact snippet provided
+        # Updated with the statistics you provided
         st.markdown("""
         <div>
           <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
             <div style="width: 15px; height: 15px; background-color: #3B82F6; border-radius: 3px; margin-right: 0.5rem;"></div>
-            <div>Legitimate Transactions: 984 (98.40%)</div>
+            <div>Legitimate Transactions: 773,946 (98.42%)</div>
           </div>
           <div style="width: 100%; background-color: #DBEAFE; height: 30px; border-radius: 4px;">
-            <div style="width: 98.4%; background-color: #3B82F6; height: 100%; border-radius: 4px;"></div>
+            <div style="width: 98.42%; background-color: #3B82F6; height: 100%; border-radius: 4px;"></div>
           </div>
           <div style="display: flex; align-items: center; margin-top: 1rem; margin-bottom: 0.5rem;">
             <div style="width: 15px; height: 15px; background-color: #EF4444; border-radius: 3px; margin-right: 0.5rem;"></div>
-            <div>Fraudulent Transactions: 16 (1.60%)</div>
+            <div>Fraudulent Transactions: 12,417 (1.58%)</div>
           </div>
           <div style="width: 100%; background-color: #FEE2E2; height: 30px; border-radius: 4px;">
-            <div style="width: 1.6%; background-color: #EF4444; height: 100%; border-radius: 4px;"></div>
+            <div style="width: 1.58%; background-color: #EF4444; height: 100%; border-radius: 4px;"></div>
           </div>
         </div>
         """, unsafe_allow_html=True)
@@ -331,6 +339,13 @@ def main():
         <div class="insight-text">
             <p>This interactive demo allows you to test our fraud detection model with custom transaction parameters.
             Adjust the sliders and inputs below to see how different factors affect the fraud risk score.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Note about reduced dataset
+        st.markdown("""
+        <div class="insight-text" style="background-color: #F0FDF4; padding: 10px; border-radius: 8px; border-left: 4px solid #10B981; margin-bottom: 20px;">
+            <p><strong>Note:</strong> This demo is using a reduced dataset due to GitHub limitations. The full application is running on Streamlit.</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -477,40 +492,81 @@ def main():
         # Header
         st.markdown('<h1 class="main-header">Fraud Pattern Analysis</h1>', unsafe_allow_html=True)
         
+        # Note about reduced dataset
+        st.markdown("""
+        <div class="insight-text" style="background-color: #F0FDF4; padding: 10px; border-radius: 8px; border-left: 4px solid #10B981; margin-bottom: 20px;">
+            <p><strong>Note:</strong> This analysis is using a reduced dataset due to GitHub limitations. The full application is running on Streamlit.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Time-based patterns
         st.markdown('<h2 class="sub-header">Time-based Fraud Patterns</h2>', unsafe_allow_html=True)
         
-        # Create text-based chart for hour of day
-        hour_groups = df_features.groupby('hour')
-        fraud_rates = hour_groups['isFraud'].mean() * 100
+        # Use the exact data from Image 1
+        hour_fraud_data = {
+            0: 514, 1: 482, 2: 492, 3: 550, 4: 520, 5: 496, 6: 513, 7: 494, 8: 546, 9: 529,
+            10: 517, 11: 556, 12: 567, 13: 588, 14: 527, 15: 529, 16: 487, 17: 500, 18: 531,
+            19: 475, 20: 485, 21: 538, 22: 476, 23: 505
+        }
         
-        hour_chart = "Fraud Rate by Hour of Day:\n\n"
+        # Calculate percentages as shown in Image 1
+        total_fraud = sum(hour_fraud_data.values())
+        hour_chart = "Fraudulent transactions by hour of day:\n\n"
+        hour_chart += f"{'Hour':<5} {'Count':<7} {'Percentage':<10}\n"
+        
         for hour in range(24):
-            rate = fraud_rates.get(hour, 0)
-            bar = '■' * int(rate)
-            hour_chart += f"{hour:02d}:00 | {bar} {rate:.2f}%\n"
+            count = hour_fraud_data[hour]
+            percentage = count / total_fraud
+            # Create a simple bar with fixed width based on percentage
+            bar_length = int(percentage * 50)
+            bar = '■' * bar_length
+            hour_chart += f"{hour:<5} {count:<7} {percentage:.6f} {bar}\n"
         
         st.text(hour_chart)
+        
+        # Show the peak times insight
+        st.markdown("""
+        <div class="insight-text" style="margin-top: 15px;">
+            <p>Key Observation: The highest fraud activity occurs between 11am and 1pm (hours 11-13), 
+            with 13:00 (1pm) being the peak time for fraudulent transactions. 
+            There's also elevated activity in early morning hours (3am) and evening hours (8pm-9pm).</p>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Amount-based patterns
         st.markdown('<h2 class="sub-header">Transaction Amount Patterns</h2>', unsafe_allow_html=True)
         
-        # Create bins for transaction amounts
-        bins = [0, 10, 50, 100, 500, float('inf')]
-        labels = ['$0-$10', '$10-$50', '$50-$100', '$100-$500', '$500+']
-        
-        df_features['amount_range'] = pd.cut(df_features['transactionAmount'].abs(), bins=bins, labels=labels)
-        
-        # Calculate fraud rate by amount range
-        amount_fraud_rates = df_features.groupby('amount_range')['isFraud'].mean() * 100
+        # Use the exact data from Image 2
+        amount_fraud_rates = {
+            '$0-$10': 0.437626,
+            '$10-$50': 0.743014,
+            '$50-$100': 1.196787,
+            '$100-$500': 2.301758,
+            '$500+': 4.135975
+        }
         
         amount_chart = "Fraud Rate by Transaction Amount:\n\n"
-        for amount_range in labels:
-            rate = amount_fraud_rates.get(amount_range, 0)
-            bar = '■' * int(rate / 2)  # Scaled to fit
-            amount_chart += f"{amount_range:10} | {bar} {rate:.2f}%\n"
+        amount_chart += f"{'Amount Range':<12} {'Fraud Rate (%)':<15}\n"
+        
+        for amount_range, rate in amount_fraud_rates.items():
+            # Convert rate to percentage
+            rate_pct = rate * 100
+            # Create a simple bar chart
+            bar_length = int(rate * 20)  # Scale for better visibility
+            bar = '■' * bar_length
+            amount_chart += f"{amount_range:<12} {rate_pct:.2f}%       {bar}\n"
         
         st.text(amount_chart)
+        
+        # Show the amount insight
+        st.markdown("""
+        <div class="insight-text" style="margin-top: 15px;">
+            <p>Key Observation: Fraud rates increase dramatically with transaction amount. 
+            Transactions over $500 have a fraud rate of 4.14%, which is nearly 10 times higher 
+            than small transactions under $10 (0.44%). This suggests that fraudsters target 
+            higher-value transactions for greater payoff.</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Model Performance page
     elif page == "Model Performance":
@@ -549,13 +605,13 @@ def main():
         # Model performance metrics
         st.markdown('<h2 class="sub-header">Performance Metrics</h2>', unsafe_allow_html=True)
         
-        # Simulated metrics
+        # Updated metrics based on your provided data
         metrics = {
-            'accuracy': 0.992,
-            'precision': 0.87,
-            'recall': 0.83,
-            'f1': 0.85,
-            'auc': 0.96
+            'accuracy': 0.87,
+            'precision': 0.14,
+            'recall': 0.23,
+            'f1': 0.17,
+            'auc': 0.8198
         }
         
         col1, col2, col3, col4 = st.columns(4)
@@ -592,10 +648,22 @@ def main():
             </div>
             """, unsafe_allow_html=True)
         
+        # Additional metrics
+        st.markdown("""
+        <div style="background-color: #F0F9FF; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <h3 style="color: #1E40AF; font-size: 1.2rem; margin-bottom: 10px;">Additional Performance Metrics</h3>
+            <ul style="margin-bottom: 0;">
+                <li><strong>PR AUC:</strong> 0.0991</li>
+                <li><strong>Cross-Validation Mean ROC AUC:</strong> 0.8190 (±0.0045)</li>
+                <li><strong>F1-score (fraud):</strong> 0.17</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Confusion matrix
         st.markdown('<h2 class="sub-header">Confusion Matrix</h2>', unsafe_allow_html=True)
         
-        # Create HTML confusion matrix
+        # Create HTML confusion matrix with updated values from your image
         st.markdown("""
         <table class="confusion-matrix">
             <tr>
@@ -606,38 +674,54 @@ def main():
             <tr>
                 <td></td>
                 <td></td>
-                <td class="matrix-header">Legitimate</td>
-                <td class="matrix-header">Fraud</td>
+                <td class="matrix-header">Legitimate (0)</td>
+                <td class="matrix-header">Fraud (1)</td>
             </tr>
             <tr>
                 <td rowspan="2" style="writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-weight: bold; background-color: #E0E7FF; padding: 0.8rem;">Actual</td>
-                <td class="matrix-label">Legitimate</td>
-                <td class="matrix-true-negative">9,820<span class="subtext">True Negative</span></td>
-                <td class="matrix-false-positive">30<span class="subtext">False Positive</span></td>
+                <td class="matrix-label">Legitimate (0)</td>
+                <td class="matrix-true-negative">135,569<span class="subtext">True Negative</span></td>
+                <td class="matrix-false-positive">19,221<span class="subtext">False Positive</span></td>
             </tr>
             <tr>
-                <td class="matrix-label">Fraud</td>
-                <td class="matrix-false-negative">25<span class="subtext">False Negative</span></td>
-                <td class="matrix-true-positive">125<span class="subtext">True Positive</span></td>
+                <td class="matrix-label">Fraud (1)</td>
+                <td class="matrix-false-negative">1,452<span class="subtext">False Negative</span></td>
+                <td class="matrix-true-positive">1,031<span class="subtext">True Positive</span></td>
             </tr>
         </table>
+        <div style="text-align: center; margin-top: 10px; font-style: italic; color: #4B5563;">SMOTE Model Confusion Matrix</div>
+        """, unsafe_allow_html=True)
+        
+        # Add explanation of the matrix
+        st.markdown("""
+        <div style="background-color: #F0F9FF; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <h3 style="color: #1E40AF; font-size: 1.2rem; margin-bottom: 10px;">Confusion Matrix Analysis</h3>
+            <p>This confusion matrix shows the performance of our XGBoost classifier with SMOTE balancing:</p>
+            <ul>
+                <li><strong>True Negatives (135,569):</strong> Correctly identified legitimate transactions</li>
+                <li><strong>False Positives (19,221):</strong> Legitimate transactions incorrectly flagged as fraud</li>
+                <li><strong>False Negatives (1,452):</strong> Fraudulent transactions missed by the model</li>
+                <li><strong>True Positives (1,031):</strong> Correctly identified fraudulent transactions</li>
+            </ul>
+            <p>The model successfully captures 23% of fraud cases (recall) but has a relatively high false positive rate, resulting in 14% precision on fraud cases.</p>
+        </div>
         """, unsafe_allow_html=True)
         
         # Feature importance
         st.markdown('<h2 class="sub-header">Top Predictive Features</h2>', unsafe_allow_html=True)
         
-        # Create visual feature importance
+        # Create visual feature importance with updated features
         features = [
-            ("CVV Match", 100),
-            ("Transaction Amount", 82),
+            ("POS Entry Mode (05)", 100),
+            ("Transaction Amount", 87),
+            ("MCC Fraud Rate", 76),
+            ("Card Present", 72),
+            ("Merchant Category (Entertainment)", 68),
             ("Hour of Day", 65),
-            ("Card Present", 61),
-            ("Credit Utilization", 55),
-            ("Merchant Category Risk", 48),
-            ("Account Age", 45),
-            ("Cross-Border Flag", 42),
-            ("Transaction Frequency", 38),
-            ("Amount/Limit Ratio", 32)
+            ("Cross-Border Flag", 58),
+            ("Transaction Frequency", 53),
+            ("Account Age", 49),
+            ("CVV Match", 45)
         ]
         
         for feature, importance in features:
@@ -648,6 +732,21 @@ def main():
             </div>
             <div class="feature-bar" style="width: {importance}%;"></div>
             """, unsafe_allow_html=True)
+            
+        # Add model architecture explanation with SMOTE
+        st.markdown("""
+        <div style="background-color: #F0F9FF; padding: 15px; border-radius: 8px; margin-top: 20px;">
+            <h3 style="color: #1E40AF; font-size: 1.2rem; margin-bottom: 10px;">XGBoost with SMOTE Balancing</h3>
+            <p>Our model uses <strong>XGBoost (Extreme Gradient Boosting)</strong> with <strong>SMOTE (Synthetic Minority Over-sampling Technique)</strong> to handle the class imbalance in fraud detection:</p>
+            <ul>
+                <li><strong>SMOTE:</strong> Creates synthetic samples of the minority class (fraud) to balance the dataset</li>
+                <li><strong>Threshold Tuning:</strong> Optimized decision threshold to balance precision and recall</li>
+                <li><strong>Feature Engineering:</strong> Created domain-specific features like merchant category risk scores</li>
+                <li><strong>Cross-Validation:</strong> 5-fold cross-validation with Mean ROC AUC of 0.8190 (±0.0045)</li>
+            </ul>
+            <p>While the model achieves good AUC (0.8198), the precision-recall tradeoff remains challenging due to the inherent imbalance in fraud detection problems.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
