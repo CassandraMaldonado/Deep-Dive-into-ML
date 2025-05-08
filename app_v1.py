@@ -328,33 +328,6 @@ def main():
                 <p>• We've identified <span class="highlight">4</span> high-risk merchant categories with abnormally high fraud rates.</p>
             </div>
             """, unsafe_allow_html=True)
-        
-        # Key insights
-        st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
-        
-        col1, col2 = st.columns(2)
-        
-        avg_legit_amount = df[~df['isFraud']]['transactionAmount'].mean()
-        
-        with col1:
-            st.markdown(f"""
-            <div class="insight-text">
-                <p>• Fraudulent transactions make up <span class="highlight">{fraud_rate:.2f}%</span> of all transactions, representing a significant financial risk.</p>
-                <p>• The average fraudulent transaction amount is <span class="highlight">${avg_fraud_amount:.2f}</span>, which is {avg_fraud_amount/avg_legit_amount:.1f}x higher than legitimate transactions.</p>
-                <p>• Most fraud occurs during <span class="highlight">late night hours</span> (12am-4am), when monitoring may be reduced.</p>
-                <p>• Transactions without CVV match are <span class="highlight">19x</span> more likely to be fraudulent.</p>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("""
-            <div class="insight-text">
-                <p>• Cross-border transactions show a <span class="highlight">3.7x</span> higher fraud rate than domestic ones.</p>
-                <p>• Our model detects <span class="highlight">83.0%</span> of fraudulent transactions while maintaining a low false positive rate.</p>
-                <p>• The most predictive features are <span class="highlight">CVV match</span>, <span class="highlight">transaction amount</span>, and <span class="highlight">time of day</span>.</p>
-                <p>• We've identified <span class="highlight">5</span> high-risk merchant categories with abnormally high fraud rates.</p>
-            </div>
-            """, unsafe_allow_html=True)
     
     # Live Demo page
     elif page == "Live Demo":
@@ -530,10 +503,34 @@ def main():
         
         # Use the exact data from Image 1
         hour_fraud_data = {
-            0: 514, 1: 482, 2: 492, 3: 550, 4: 520, 5: 496, 6: 513, 7: 494, 8: 546, 9: 529,
-            10: 517, 11: 556, 12: 567, 13: 588, 14: 527, 15: 529, 16: 487, 17: 500, 18: 531,
-            19: 475, 20: 485, 21: 538, 22: 476, 23: 505
+            0: {"count": 514, "percentage": 0.065364},
+            1: {"count": 482, "percentage": 0.061295},
+            2: {"count": 492, "percentage": 0.062567},
+            3: {"count": 550, "percentage": 0.069942},
+            4: {"count": 520, "percentage": 0.066127},
+            5: {"count": 496, "percentage": 0.063075},
+            6: {"count": 513, "percentage": 0.065237},
+            7: {"count": 494, "percentage": 0.062821},
+            8: {"count": 546, "percentage": 0.069434},
+            9: {"count": 529, "percentage": 0.067272},
+            10: {"count": 517, "percentage": 0.065746},
+            11: {"count": 556, "percentage": 0.070705},
+            12: {"count": 567, "percentage": 0.072104},
+            13: {"count": 588, "percentage": 0.074775},
+            14: {"count": 527, "percentage": 0.067017},
+            15: {"count": 529, "percentage": 0.067272},
+            16: {"count": 487, "percentage": 0.061931},
+            17: {"count": 500, "percentage": 0.063584},
+            18: {"count": 531, "percentage": 0.067526},
+            19: {"count": 475, "percentage": 0.060405},
+            20: {"count": 485, "percentage": 0.061676},
+            21: {"count": 538, "percentage": 0.068416},
+            22: {"count": 476, "percentage": 0.060532},
+            23: {"count": 505, "percentage": 0.064220}
         }
+        
+        hour_chart = "Fraudulent transactions by hour of day:\n\n"
+        hour_chart += f"{'Hour':<5} {'Count':<7} {'Percentage':<10}\n"
         
         # Calculate percentages as shown in Image 1
         total_fraud = sum(hour_fraud_data.values())
@@ -588,8 +585,8 @@ def main():
         st.markdown("""
         <div class="insight-text" style="margin-top: 15px;">
             <p>Key Observation: Fraud rates increase dramatically with transaction amount. 
-            Transactions over $500 have a fraud rate of 4.14%, which is nearly 10 times higher 
-            than small transactions under $10 (0.44%). This suggests that fraudsters target 
+            Transactions over $500 have a fraud rate of 414%, which is nearly 10 times higher 
+            than small transactions under $10 (44%). This suggests that fraudsters target 
             higher-value transactions for greater payoff.</p>
         </div>
         """, unsafe_allow_html=True)
