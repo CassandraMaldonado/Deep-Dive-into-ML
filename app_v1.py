@@ -566,18 +566,30 @@ def main():
             '$500+': 4.1359
         }
 
-        amount_chart = "Fraud Rate by Transaction Amount:\n\n"
-        amount_chart += f"{'Amount Range':<12} {'Fraud Rate (%)':<15} {'Distribution':<30}\n"
+         # Create a cleaner display for fraud rates without the ASCII bar chart
+        st.markdown("""
+        <div style="background-color: #F8FAFC; padding: 20px; border-radius: 8px; margin-top: 10px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr style="border-bottom: 1px solid #E2E8F0;">
+             <th style="text-align: left; padding: 10px; font-weight: bold; color: #1E40AF;">Amount Range</th>
+             <th style="text-align: left; padding: 10px; font-weight: bold; color: #1E40AF;">Fraud Rate (%)</th>
+            </tr>
+""", unsafe_allow_html=True)
 
         for amount_range, rate in amount_fraud_rates.items():
-            # Convert rate to percentage
-            rate_pct = rate * 100
-            # Create a simple bar chart
-            bar_length = int(rate * 800)  # Scale for better visibility
-            bar = '■' * bar_length
-            amount_chart += f"{amount_range:<12} {rate_pct:.2f}%       {bar}\n"
+         # Convert rate to percentage
+         rate_pct = rate
+         st.markdown(f"""
+            <tr style="border-bottom: 1px solid #E2E8F0;">
+             <td style="padding: 10px;">{amount_range}</td>
+             <td style="padding: 10px;">{rate_pct:.2f}%</td>
+            </tr>
+    """, unsafe_allow_html=True)
 
-        st.text(amount_chart)
+st.markdown("""
+    </table>
+</div>
+""", unsafe_allow_html=True)  
 
         # Show the amount insight
         st.markdown("""
