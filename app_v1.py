@@ -275,34 +275,53 @@ def main():
         # Fraud distribution
         st.markdown('<h2 class="sub-header">Fraud Distribution</h2>', unsafe_allow_html=True)
         
-        # Create simple fraud distribution visualization
-        fraud_count = df['isFraud'].sum()
-        total_count = len(df)
-        fraud_percentage = fraud_count / total_count * 100
-        
-        st.markdown(f"""
-        <div style="background-color: #F8FAFC; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-            <div style="margin-bottom: 1rem;">
-                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <div style="width: 15px; height: 15px; background-color: #3B82F6; border-radius: 3px; margin-right: 0.5rem;"></div>
-                    <div>Legitimate Transactions: {total_count - fraud_count:,} ({100 - fraud_percentage:.2f}%)</div>
-                </div>
-                <div style="width: 100%; background-color: #DBEAFE; height: 30px; border-radius: 4px;">
-                    <div style="width: {100 - fraud_percentage}%; background-color: #3B82F6; height: 100%; border-radius: 4px;"></div>
-                </div>
-            </div>
-            
-            <div>
-                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <div style="width: 15px; height: 15px; background-color: #EF4444; border-radius: 3px; margin-right: 0.5rem;"></div>
-                    <div>Fraudulent Transactions: {fraud_count:,} ({fraud_percentage:.2f}%)</div>
-                </div>
-                <div style="width: 100%; background-color: #FEE2E2; height: 30px; border-radius: 4px;">
-                    <div style="width: {fraud_percentage}%; background-color: #EF4444; height: 100%; border-radius: 4px;"></div>
-                </div>
-            </div>
+        # Using the exact snippet provided
+        st.markdown("""
+        <div>
+          <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+            <div style="width: 15px; height: 15px; background-color: #3B82F6; border-radius: 3px; margin-right: 0.5rem;"></div>
+            <div>Legitimate Transactions: 984 (98.40%)</div>
+          </div>
+          <div style="width: 100%; background-color: #DBEAFE; height: 30px; border-radius: 4px;">
+            <div style="width: 98.4%; background-color: #3B82F6; height: 100%; border-radius: 4px;"></div>
+          </div>
+          <div style="display: flex; align-items: center; margin-top: 1rem; margin-bottom: 0.5rem;">
+            <div style="width: 15px; height: 15px; background-color: #EF4444; border-radius: 3px; margin-right: 0.5rem;"></div>
+            <div>Fraudulent Transactions: 16 (1.60%)</div>
+          </div>
+          <div style="width: 100%; background-color: #FEE2E2; height: 30px; border-radius: 4px;">
+            <div style="width: 1.6%; background-color: #EF4444; height: 100%; border-radius: 4px;"></div>
+          </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Key insights
+        st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        
+        avg_legit_amount = df[~df['isFraud']]['transactionAmount'].mean()
+        
+        with col1:
+            st.markdown(f"""
+            <div class="insight-text">
+                <p>• Fraudulent transactions make up <span class="highlight">{fraud_rate:.2f}%</span> of all transactions, representing a significant financial risk.</p>
+                <p>• The average fraudulent transaction amount is <span class="highlight">${avg_fraud_amount:.2f}</span>, which is {avg_fraud_amount/avg_legit_amount:.1f}x higher than legitimate transactions.</p>
+                <p>• Most fraud occurs during <span class="highlight">late night hours</span> (12am-4am), when monitoring may be reduced.</p>
+                <p>• Transactions without CVV match are <span class="highlight">19x</span> more likely to be fraudulent.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div class="insight-text">
+                <p>• Cross-border transactions show a <span class="highlight">3.7x</span> higher fraud rate than domestic ones.</p>
+                <p>• Our model detects <span class="highlight">83.0%</span> of fraudulent transactions while maintaining a low false positive rate.</p>
+                <p>• The most predictive features are <span class="highlight">CVV match</span>, <span class="highlight">transaction amount</span>, and <span class="highlight">time of day</span>.</p>
+                <p>• We've identified <span class="highlight">5</span> high-risk merchant categories with abnormally high fraud rates.</p>
+            </div>
+            """, unsafe_allow_html=True)
+
         
         # Key insights
         st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
@@ -527,36 +546,33 @@ def main():
         st.markdown('<h1 class="main-header">Fraud Detection Model Performance</h1>', unsafe_allow_html=True)
         
         # Model overview
-        st.markdown('<h2 class="sub-header">Model Architecture</h2>', unsafe_allow_html=True)
-        
-        # Create a properly formatted model architecture display
+        st.markdown("## 🧠 Fraud Detection Model Architecture")
         st.markdown("""
-        <div class="model-box">
-            <div class="model-component">
-                <div class="model-title">Our fraud detection model uses XGBoost</div>
-                <p>A powerful gradient boosting algorithm that excels at classification tasks with imbalanced data. The model was trained on historical transaction data with these key components:</p>
-            </div>
-            
-            <div class="model-component">
-                <div class="model-title">Input Features:</div>
-                <ul class="model-list">
-                    <li class="model-item">Transaction characteristics (amount, time, location)</li>
-                    <li class="model-item">Account information (age, credit utilization)</li>
-                    <li class="model-item">Merchant information (category codes, transaction frequency)</li>
-                    <li class="model-item">Security features (CVV match, card presence)</li>
-                </ul>
-            </div>
-            
-            <div class="model-component">
-                <div class="model-title">Preprocessing Pipeline:</div>
-                <ul class="model-list">
-                    <li class="model-item">Standardization of numeric features</li>
-                    <li class="model-item">One-hot encoding of categorical variables</li>
-                    <li class="model-item">Class weight balancing to address fraud imbalance</li>
-                </ul>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        **Model Used:** `XGBoost Classifier`  
+        A powerful gradient boosting algorithm that works well with imbalanced datasets like fraud detection.
+        ---
+        ### 🔍 Input Feature Categories
+        - **Transaction characteristics**: amount, time, hour of day, day of week
+        - **Account information**: account age, credit utilization, days since last address change
+        - **Merchant information**: merchant category, historical fraud rates, frequency
+        - **Security features**: CVV match, card present, expiration key match
+        - **Behavioral patterns**: average spend per account, transaction count, ratio to account average
+        ---
+        ### ⚙️ Preprocessing Pipeline
+        - Standardization of numeric features using `StandardScaler`
+        - One-hot encoding of categorical features (e.g., merchantCategoryCode, posEntryMode)
+        - Handling missing values with median/imputation
+        - Class imbalance addressed with scaled class weights in XGBoost
+        - Model threshold optimized based on F1-score
+        - Performance measured using **ROC AUC**, **Precision-Recall AUC**, and **confusion matrix**
+        ---
+        ### 📌 Why XGBoost?
+        XGBoost is known for:
+        - High performance on tabular data
+        - Robustness against overfitting
+        - Support for handling skewed class distributions using `scale_pos_weight`
+        - Interpretability through feature importance
+        """)
         
         # Model performance metrics
         st.markdown('<h2 class="sub-header">Performance Metrics</h2>', unsafe_allow_html=True)
