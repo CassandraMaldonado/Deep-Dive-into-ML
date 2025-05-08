@@ -580,8 +580,8 @@ def main():
         st.markdown("""
         <div class="insight-text" style="margin-top: 15px;">
             <p>Key Observation: Fraud rates increase dramatically with transaction amount. 
-            Transactions over $500 have a fraud rate of 4.14%, which is nearly 10 times higher 
-            than small transactions under $10 (0.44%). This suggests that fraudsters target 
+            Transactions over $500 have a fraud rate of 414%, which is almost 10 times higher 
+            than small transactions under $10 (44%). This suggests that fraudsters target 
             higher-value transactions for greater payoff.</p>
         </div>
         """, unsafe_allow_html=True)
