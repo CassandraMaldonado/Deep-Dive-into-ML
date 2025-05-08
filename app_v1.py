@@ -273,6 +273,7 @@ def main():
         
         with col4:
             # Using hardcoded value from your statistics
+        # Using hardcoded value from your statistics
             st.markdown("""
             <div class="metric-card">
                 <div class="metric-value">$225.22</div>
@@ -302,6 +303,31 @@ def main():
           </div>
         </div>
         """, unsafe_allow_html=True)
+        
+        # Key insights
+        st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.markdown("""
+            <div class="insight-text">
+                <p>• Fraudulent transactions make up <span class="highlight">1.58%</span> of all transactions, representing a significant financial risk.</p>
+                <p>• The average fraudulent transaction amount is <span class="highlight">$225.22</span>, which is <span class="highlight">1.7x</span> higher than legitimate transactions.</p>
+                <p>• Most fraud occurs during <span class="highlight">late night hours</span> (12am-4am), accounting for <span class="highlight">20.6%</span> of all fraud cases.</p>
+                <p>• Transactions without CVV match are <span class="highlight">1.8x</span> more likely to be fraudulent.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown("""
+            <div class="insight-text">
+                <p>• Cross-border transactions show a <span class="highlight">1.1x</span> higher fraud rate than domestic ones.</p>
+                <p>• Our model detects <span class="highlight">83.0%</span> of fraudulent transactions while maintaining a low false positive rate.</p>
+                <p>• The most predictive features are <span class="highlight">CVV match</span>, <span class="highlight">transaction amount</span>, and <span class="highlight">time of day</span>.</p>
+                <p>• We've identified <span class="highlight">4</span> high-risk merchant categories with abnormally high fraud rates.</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         # Key insights
         st.markdown('<h2 class="sub-header">Key Insights</h2>', unsafe_allow_html=True)
