@@ -10,6 +10,6 @@
 
 - _Libraries:_ NumPy, Pandas, Scikit-learn, Matplotlib, Seaborn
 
-Deep Learning: PyTorch and TensorFlow
+- _Deep Learning:_ PyTorch and TensorFlow
 
-Tools: Jupyter, Git, VSCode
+- _Tools:_ Jupyter, Git, VSCode
